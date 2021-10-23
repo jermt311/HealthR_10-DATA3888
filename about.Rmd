@@ -1,0 +1,76 @@
+---
+title: <font size="6"> About The Project</font> 
+author: 
+output:
+  html_document:
+    css: "style.css"
+    highlight: pygments
+    number_sections: false
+    self_contained: true
+    lib_dir: libs
+    fig_caption: true
+    toc: false
+    toc_float: false
+
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(warning=FALSE)
+```
+
+
+In March 2020, the World Health Organisation declared COVID-19 a global pandemic following the alarming levels of global spread. Forcing the closure of millions of non-essential businesses while changing what we would consider as `normal`. Thus, it is imperative that we begin planning feasible outcomes for the future, to answer the question of how we will work, live, and thrive in a post-pandemic world. 
+<br />
+COVID-19 has been a driving factor for changes to the `normal` environment and as a group Health_R10 has decided that Health Systems will be the general topic that we will be basing our dashboard on.
+<br />
+
+With this in mind, the aim of this project is to discover which country's response model/ rollout model was most effective and provide information on which is the most important factors that make these models to be effective.
+
+This project is an Interdisciplinary Capstone Project - DATA3888 created by Jiansong Zhao, Jielin Feng, Jeremy Tan, Rhuten Yeole, Vinh Quang Hoang and Xingwei Zhou. Various data Sources are `hyperlinked` over the course of the **About** page. 
+
+<img src="www/usyd_logo.png" width="250"/>
+
+## Global Statistics
+
+The **main components** of the analysis are:
+
+- **Insert Sources**
+
+The data used in this project can be obtained from the following Sources; 
+
+- **Insert Sources**
+
+## Oxford Covid-19 Government Response Tracker (OxCGRT)
+
+The **main components** of the analysis are:
+
+- Placeholder 1
+- Placeholder 2
+
+Data from the Oxford Covid-19 Government Response Tracker (OxCGRT) is collected by [Blavatnik School of Government](https://www.bsg.ox.ac.uk/covidtracker). OxCGRT collects the data regarding what measures various governments have taken during which (time) period in order to aid efforts to fight the COVID-19 pandemic. The data used in this project can be obtained from [github.com](https://github.com/OxCGRT/covid-policy-tracker)
+
+## Our World In Data (OWID) COVID-19 Testing
+
+The **main components** of the analysis are:
+
+- Placeholder 1
+- Placeholder 2
+
+For testing, we drew from three (3) various data sources to perform our analysis. First, [Testing Policies](https://ourworldindata.org/grapher/covid-19-testing-policy) where OWID used a specific dataset from [OxCGRT](https://www.bsg.ox.ac.uk/research/research-projects/oxford-covid-19-government-response-tracker). The data here is a subset of the one used in **Oxford Covid-19 Government Response Tracker (OxCGRT)**. Next, [OWID]( https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/owid-covid-data.csv) reproduced a dataset which included various areas of general COVID-19 information. This dataset contained features relating to COVID-19 tests. The last data set used can be from from [OWID](https://ourworldindata.org/grapher/daily-covid-19-tests-smoothed-7-day?time=2020-04-09..latest&country=~MYS). Where the time series data was smoothed by averaging daily figures over a rolling 7 - day window. 
+
+## Our World In Data (OWID) COVID-19 Vaccinations
+
+The **main components** of the analysis are:
+
+- Placeholder 1
+- Placeholder 2
+
+The various vaccination datasets used were provided by [OWID](https://github.com/owid/covid-19-data/tree/master/public/data/vaccinations) while additional datasets used contained continent related information to aid the categorization of continents also hosted by [OWID](https://ourworldindata.org/grapher/continents-according-to-our-world-in-data) at the respective link. In their [Github Repository](https://github.com/owid/covid-19-data/tree/master/public/data/vaccinations), OWID stored country-by-country data on global vaccinations. Including information about total number of vaccinations, daily vaccinations and so on. 
+
+
+## The Code
+
+The code used to implement the shiny app and visualizations were written in **"R"**. **Documentation** and **About** pages of the Shiny Dashboard app were written and published using *R Markdown* for better flexibility.
+
+The **Source Code** of this project can be found at our 
+[Github](https://github.sydney.edu.au/VHOA0395/HealthR_10-DATA3888)

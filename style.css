@@ -1,0 +1,10 @@
+.navbar { background-color: #fb6c2e;}
+                          .navbar-default .navbar-brand{color: white;}
+                          .tab-panel{ background-color: green; color: black}
+                          .navbar-default .navbar-nav > .active > a, 
+                           .navbar-default .navbar-nav > .active > a:focus, 
+                           .navbar-default .navbar-nav > .active > a:hover {
+                                color: white;
+                                background-color: orange;
+                            }
+                    a:link {color: orange;}

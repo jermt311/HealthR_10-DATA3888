@@ -1,0 +1,171 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r message = F, warning = F}
+library(ggplot2)
+library(dplyr)
+library(patchwork)
+library(DT)
+```
+
+```{r}
+covid <- read.csv("https://covid.ourworldindata.org/data/owid-covid-data.csv")
+```
+
+```{r}
+covid_new <- covid[, c("location", "date", "new_cases",  "new_deaths","stringency_index")]
+```
+
+```{r}
+covid_new$date <- as.Date(covid_new$date)
+```
+
+```{r}
+covid_new <- covid_new[covid_new$location != "Africa" & covid_new$location != "North America" 
+                       & covid_new$location != "Europe" & covid_new$location != "South America"
+                       & covid_new$location != "Asia",]
+```
+
+```{r}
+covid_oz <- subset(covid_new, location == "Australia")
+```
+
+```{r}
+p1 <- ggplot() + geom_col(data=covid_oz, aes(x=date, y=new_cases), color="red", size=0.9) +
+  geom_line(data=covid_oz, aes(x=date, y=stringency_index), color="blue", size = 1)
+p1
+```
+```{r}
+ggplot(covid_oz, aes(x=date)) + geom_col(aes(y=new_cases)) + geom_line(aes(y=stringency_index)) +
+  scale_y_continuous(name="New Cases", sec.axis = sec_axis(~./10, name="Stringency Index"))
+```
+```{r}
+par(mar = c(5, 5, 3, 5))
+plot(covid_oz$date, covid_oz$new_cases, type="l", col="red", ylab="New cases", xlab="Date")
+par(new=TRUE)
+plot(covid_oz$stringency_index, type="l", col="blue", xaxt = "n", yaxt = "n", ylab="", xlab="")
+axis(side = 4)
+mtext("Stringency Index", side = 4, line = 3)
+par(xaxs="r")
+```
+
+```{r}
+policy <- read.csv("https://raw.githubusercontent.com/OxCGRT/covid-policy-tracker/master/data/OxCGRT_latest.csv")
+```
+
+```{r}
+policy$C1_School.closing[policy$C1_School.closing==0] <- "0 - No measures"
+policy$C1_School.closing[policy$C1_School.closing==1] <- "1 - Recommended"
+policy$C1_School.closing[policy$C1_School.closing==2] <- "2 - Required at some levels"
+policy$C1_School.closing[policy$C1_School.closing==3] <- "3 - Required at all levels"
+
+policy$C2_Workplace.closing[policy$C2_Workplace.closing==0] <- "0 - No measures"
+policy$C2_Workplace.closing[policy$C2_Workplace.closing==1] <- "1 - Recommended"
+policy$C2_Workplace.closing[policy$C2_Workplace.closing==2] <- "2 - Required for some"
+policy$C2_Workplace.closing[policy$C2_Workplace.closing==3] <- "3 - Required for all but key workers"
+
+policy$C3_Cancel.public.events[policy$C3_Cancel.public.events==0] <- "0 - No measures"
+policy$C3_Cancel.public.events[policy$C3_Cancel.public.events==1] <- "1 - Recommended"
+policy$C3_Cancel.public.events[policy$C3_Cancel.public.events==2] <- "2 - Required"
+
+policy$C4_Restrictions.on.gatherings[policy$C4_Restrictions.on.gatherings==0] <- "0 - No restrictions"
+policy$C4_Restrictions.on.gatherings[policy$C4_Restrictions.on.gatherings==1] <- "1 - >1000 people"
+policy$C4_Restrictions.on.gatherings[policy$C4_Restrictions.on.gatherings==2] <- "2 - 101-1000 people"
+policy$C4_Restrictions.on.gatherings[policy$C4_Restrictions.on.gatherings==3] <- "3 - 11-100 people"
+policy$C4_Restrictions.on.gatherings[policy$C4_Restrictions.on.gatherings==4] <- "4 - <10 people"
+
+policy$C5_Close.public.transport[policy$C5_Close.public.transport==0] <- "0 - No measures"
+policy$C5_Close.public.transport[policy$C5_Close.public.transport==1] <- "1 - Recommended closing"
+policy$C5_Close.public.transport[policy$C5_Close.public.transport==2] <- "2 - Required closing"
+
+policy$C6_Stay.at.home.requirements[policy$C6_Stay.at.home.requirements==0] <- "0 - No measures"
+policy$C6_Stay.at.home.requirements[policy$C6_Stay.at.home.requirements==1] <- "1 - Recommended"
+policy$C6_Stay.at.home.requirements[policy$C6_Stay.at.home.requirements==2] <- "2 - Required (except essentials)"
+policy$C6_Stay.at.home.requirements[policy$C6_Stay.at.home.requirements==3] <- "3 - Required (few exceptions)"
+
+policy$C7_Restrictions.on.internal.movement[policy$C7_Restrictions.on.internal.movement==0] <- "0 - No measures"
+policy$C7_Restrictions.on.internal.movement[policy$C7_Restrictions.on.internal.movement==1] <- "1 - Recommended movement restriction"
+policy$C7_Restrictions.on.internal.movement[policy$C7_Restrictions.on.internal.movement==2] <- "2 - Restrict movement"
+
+policy$C8_International.travel.controls[policy$C8_International.travel.controls==0] <- "0 - No restrictions"
+policy$C8_International.travel.controls[policy$C8_International.travel.controls==1] <- "1 - Screening"
+policy$C8_International.travel.controls[policy$C8_International.travel.controls==2] <- "2 - Quarantine from high-risk regions"
+policy$C8_International.travel.controls[policy$C8_International.travel.controls==3] <- "3 - Ban on high-risk regions"
+policy$C8_International.travel.controls[policy$C8_International.travel.controls==4] <- "4 - Total border closure"
+
+policy$H1_Public.information.campaigns[policy$H1_Public.information.campaigns==0] <- "0 - None"
+policy$H1_Public.information.campaigns[policy$H1_Public.information.campaigns==1] <- "1 - Public officials urging caution"
+policy$H1_Public.information.campaigns[policy$H1_Public.information.campaigns==2] <- "2 - Coordinated information campaign"
+
+policy$H2_Testing.policy[policy$H2_Testing.policy==0] <- "0 - No policy"
+policy$H2_Testing.policy[policy$H2_Testing.policy==1] <- "1 - Symptoms & key groups"
+policy$H2_Testing.policy[policy$H2_Testing.policy==2] <- "2 - Anyone with symptoms"
+policy$H2_Testing.policy[policy$H2_Testing.policy==3] <- "3 - Open public testing"
+
+policy$H3_Contact.tracing[policy$H3_Contact.tracing==0] <- "0 - No tracing"
+policy$H3_Contact.tracing[policy$H3_Contact.tracing==1] <- "1 - Limited tracing"
+policy$H3_Contact.tracing[policy$H3_Contact.tracing==2] <- "2 - Comprehensive tracing"
+
+policy$H6_Facial.Coverings[policy$H6_Facial.Coverings==0] <- "0 - No policy"
+policy$H6_Facial.Coverings[policy$H6_Facial.Coverings==1] <- "1 - Recommended"
+policy$H6_Facial.Coverings[policy$H6_Facial.Coverings==2] <- "2 - Required in some public places"
+policy$H6_Facial.Coverings[policy$H6_Facial.Coverings==3] <- "3 - Required in all public places"
+policy$H6_Facial.Coverings[policy$H6_Facial.Coverings==4] <- "4 - Required outside the home at all times"
+
+policy$H7_Vaccination.policy[policy$H7_Vaccination.policy==0] <- "0 - None"
+policy$H7_Vaccination.policy[policy$H7_Vaccination.policy==1] <- "1 - One group"
+policy$H7_Vaccination.policy[policy$H7_Vaccination.policy==2] <- "2 - Two groups"
+policy$H7_Vaccination.policy[policy$H7_Vaccination.policy==3] <- "3 - All vulnerable groups"
+policy$H7_Vaccination.policy[policy$H7_Vaccination.policy==4] <- "4 - Vulnerable + some others"
+policy$H7_Vaccination.policy[policy$H7_Vaccination.policy==5] <- "5 - Universal availability"
+```
+
+```{r}
+length(unique(policy$CountryName))
+```
+
+
+```{r}
+date = "2021-01-01"
+policy_oz <- subset(policy, CountryName=="Australia")
+policy_new <- subset(policy_oz, Date<=date)
+latest.index <- tail(policy_new, 1)
+current_index <- c(round(latest.index$StringencyIndex, 0), latest.index$C1_School.closing, latest.index$C2_Workplace.closing,
+                   latest.index$C3_Cancel.public.events,
+                   latest.index$C4_Restrictions.on.gatherings, latest.index$C5_Close.public.transport,
+                   latest.index$C6_Stay.at.home.requirements,
+                   latest.index$C7_Restrictions.on.internal.movement, latest.index$C8_International.travel.controls,
+                   latest.index$H1_Public.information.campaigns, latest.index$H2_Testing.policy,
+                   latest.index$H3_Contact.tracing, latest.index$H6_Facial.Coverings,
+                   latest.index$H7_Vaccination.policy)
+max_index <- c(round(max(policy_new$StringencyIndex, na.rm=T),0), max(policy_new$C1_School.closing, na.rm=T), max(policy_new$C2_Workplace.closing, na.rm=T), max(policy_new$C3_Cancel.public.events, na.rm=T), max(policy_new$C4_Restrictions.on.gatherings, na.rm=T), max(policy_new$C5_Close.public.transport, na.rm=T), max(policy_new$C6_Stay.at.home.requirements, na.rm=T), max(policy_new$C7_Restrictions.on.internal.movement, na.rm=T), max(policy_new$C8_International.travel.controls, na.rm=T), max(policy_new$H1_Public.information.campaigns, na.rm=T), max(policy_new$H2_Testing.policy, na.rm=T), max(policy_new$H3_Contact.tracing, na.rm=T), max(policy_new$H6_Facial.Coverings, na.rm=T), max(policy_new$H7_Vaccination.policy, na.rm=T))
+```
+
+
+
+```{r}
+Policy <- c("Stringency Index", "School closures", "Workplace closures", "Cancel public events", "Restrictions on gatherings", "Public transport closures", "Stay at home requirements", "Restrictions on internal movement", "International travel controls", "Public information campaigns", "Testing Policy", "Contact tracing", "Facial coverings", "Vaccination policy")
+```
+
+```{r}
+df <- data.frame(Policy, current_index, max_index)
+```
+
+```{r}
+datatable(df, options=list(pageLength=25))
+```
+
+```{r}
+df <- read.csv("https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/vaccinations/vaccinations.csv")
+```
+
+```{r}
+
+```
+
